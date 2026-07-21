@@ -345,6 +345,45 @@
     margin-top: 8px;
   }
 
+  /* 메타(제목/인포박스) 편집 폼 */
+  .meta-edit-box {
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    background: var(--toc-bg);
+    padding: 16px 18px;
+    margin-bottom: 20px;
+  }
+  .meta-edit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 14px;
+  }
+  .meta-field { margin-bottom: 2px; }
+  .meta-field.full { grid-column: 1 / -1; }
+  .meta-field label {
+    display: block;
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+  .meta-field input {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: inherit;
+  }
+  .meta-field input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  @media (max-width: 600px) {
+    .meta-edit-grid { grid-template-columns: 1fr; }
+  }
+
   /* 편집할 문단 선택 패널 */
   .edit-select-panel {
     display: none;
@@ -543,6 +582,7 @@
   <div class="edit-select-panel" id="edit-select-panel">
     <div class="edit-select-title">편집할 문단을 선택하세요</div>
     <div class="edit-select-list">
+      <button class="btn" onclick="jumpToEdit('meta')">0. 기본 정보(제목/인포박스)</button>
       <button class="btn" onclick="jumpToEdit('sec1')">1. 개요</button>
       <button class="btn" onclick="jumpToEdit('sec2')">2. 시스템</button>
       <button class="btn" onclick="jumpToEdit('sec3')">3. 스토리</button>
@@ -551,45 +591,95 @@
     </div>
   </div>
 
+  <!-- 기본 정보(제목/인포박스) 편집 폼 -->
+  <div class="edit-area meta-edit-box" id="meta-edit">
+    <div class="meta-edit-grid">
+      <div class="meta-field full">
+        <label>제목</label>
+        <input type="text" id="meta-title-input">
+      </div>
+      <div class="meta-field full">
+        <label>부제(소개 문구)</label>
+        <input type="text" id="meta-sub-input">
+      </div>
+      <div class="meta-field full">
+        <label>각주 [1] 내용</label>
+        <input type="text" id="meta-footnote-input">
+      </div>
+      <div class="meta-field">
+        <label>개발 완료일</label>
+        <input type="text" id="meta-devdate-input">
+      </div>
+      <div class="meta-field">
+        <label>최대 플레이어 수</label>
+        <input type="text" id="meta-maxplayers-input">
+      </div>
+      <div class="meta-field">
+        <label>플랫폼</label>
+        <input type="text" id="meta-platform-input">
+      </div>
+      <div class="meta-field">
+        <label>장르</label>
+        <input type="text" id="meta-genre-input">
+      </div>
+      <div class="meta-field">
+        <label>게임 링크 URL</label>
+        <input type="text" id="meta-linkurl-input">
+      </div>
+      <div class="meta-field">
+        <label>게임 링크 표시 텍스트</label>
+        <input type="text" id="meta-linktext-input">
+      </div>
+      <div class="meta-field full">
+        <label>SNS</label>
+        <input type="text" id="meta-sns-input">
+      </div>
+    </div>
+    <div class="edit-actions">
+      <button class="btn primary" onclick="saveEdit('meta')">저장</button>
+      <button class="btn" onclick="cancelEdit('meta')">취소</button>
+    </div>
+  </div>
+
   <!-- 문서 헤더 -->
-  <div class="doc-header">
+  <div class="doc-header" id="doc-header-block">
     <div class="doc-title-row">
-      <h1 class="doc-title">알수없는 시뮬레이터 비공식 위키</h1>
+      <h1 class="doc-title" id="doc-title-text">알수없는 시뮬레이터 비공식 위키</h1>
       <a class="footnote-ref" onclick="toggleFootnote()">[1]</a>
     </div>
-    <p class="doc-sub">Roblox 게임 「알수없는 시뮬레이터」에 대한 비공식 정보 문서입니다.</p>
+    <p class="doc-sub" id="doc-sub-text">Roblox 게임 「알수없는 시뮬레이터」에 대한 비공식 정보 문서입니다.</p>
     <div class="footnote-box" id="footnote-box">
-      <b>[1]</b> 원래 맞춤법은 '알수 없는 시뮬레이터'가 맞다.
+      <b>[1]</b> <span id="footnote-text">원래 맞춤법은 '알수 없는 시뮬레이터'가 맞다.</span>
     </div>
   </div>
 
   <!-- 인포박스 -->
-  <div class="infobox">
+  <div class="infobox" id="infobox-block">
     <div class="infobox-title">알수없는 시뮬레이터</div>
     <table>
       <tr>
         <th>개발 완료일</th>
-        <td><span class="placeholder-inline">미정</span></td>
+        <td><span class="placeholder-inline" id="info-devdate">미정</span></td>
       </tr>
       <tr>
         <th>최대 플레이어 수</th>
-        <td>30명</td>
+        <td><span id="info-maxplayers">30명</span></td>
       </tr>
       <tr>
         <th>플랫폼</th>
-        <td>Roblox</td>
+        <td><span id="info-platform">Roblox</span></td>
       </tr>
       <tr>
         <th>장르</th>
-        <td>시뮬레이션 · 증분 시뮬레이터</td>
+        <td><span id="info-genre">시뮬레이션 · 증분 시뮬레이터</span></td>
       </tr>
       <tr>
         <th>게임 링크</th>
-        <td><a href="https://www.roblox.com/ko/games/93345314557302/unnamed" target="_blank" rel="noopener">Roblox에서 플레이하기</a></td>
+        <td><a id="info-link" href="https://www.roblox.com/ko/games/93345314557302/unnamed" target="_blank" rel="noopener">Roblox에서 플레이하기</a></td>
       </tr>
       <tr>
         <th>SNS</th>
-        <td><span class="placeholder-inline">미정</span></td>
+        <td><span class="placeholder-inline" id="info-sns">미정</span></td>
       </tr>
     </table>
   </div>
@@ -780,6 +870,7 @@
   var pendingEditSection = null; // 비밀번호 재확인 후 바로 열어줄 섹션
 
   var sectionLabels = {
+    meta: '0. 기본 정보',
     sec1: '1. 개요',
     sec2: '2. 시스템',
     sec3: '3. 스토리',
@@ -1045,7 +1136,11 @@
 
   function jumpToEdit(sectionId) {
     document.getElementById('edit-select-panel').classList.remove('show');
-    document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (sectionId === 'meta') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
     setTimeout(function(){ requestEdit(sectionId); }, 300);
   }
 
@@ -1116,6 +1211,25 @@
      실제 편집 진입/저장 (관리자 인증 완료 후에만 호출됨)
   ==================================================================== */
   function proceedToEdit(sectionId) {
+    if (sectionId === 'meta') {
+      document.getElementById('meta-title-input').value = document.getElementById('doc-title-text').textContent.trim();
+      document.getElementById('meta-sub-input').value = document.getElementById('doc-sub-text').textContent.trim();
+      document.getElementById('meta-footnote-input').value = document.getElementById('footnote-text').textContent.trim();
+      document.getElementById('meta-devdate-input').value = document.getElementById('info-devdate').textContent.trim();
+      document.getElementById('meta-maxplayers-input').value = document.getElementById('info-maxplayers').textContent.trim();
+      document.getElementById('meta-platform-input').value = document.getElementById('info-platform').textContent.trim();
+      document.getElementById('meta-genre-input').value = document.getElementById('info-genre').textContent.trim();
+      document.getElementById('meta-linkurl-input').value = document.getElementById('info-link').getAttribute('href') || '';
+      document.getElementById('meta-linktext-input').value = document.getElementById('info-link').textContent.trim();
+      document.getElementById('meta-sns-input').value = document.getElementById('info-sns').textContent.trim();
+
+      document.getElementById('doc-header-block').style.display = 'none';
+      document.getElementById('infobox-block').style.display = 'none';
+      document.getElementById('meta-edit').classList.add('show');
+      document.getElementById('meta-title-input').focus();
+      return;
+    }
+
     var view = document.getElementById(sectionId + '-view');
     var editArea = document.getElementById(sectionId + '-edit');
     var textarea = document.getElementById(sectionId + '-textarea');
@@ -1131,6 +1245,12 @@
   }
 
   function cancelEdit(sectionId) {
+    if (sectionId === 'meta') {
+      document.getElementById('doc-header-block').style.display = '';
+      document.getElementById('infobox-block').style.display = '';
+      document.getElementById('meta-edit').classList.remove('show');
+      return;
+    }
     document.getElementById(sectionId + '-view').style.display = '';
     document.getElementById(sectionId + '-edit').classList.remove('show');
   }
@@ -1140,6 +1260,37 @@
     // 실제 차단은 Supabase RLS 정책이 하지만, 여기서도 UX 상 한번 더 막아준다.
     if (!currentUser || !currentIsAdmin || !adminVerified) {
       showToast('편집 권한이 없습니다.');
+      return;
+    }
+
+    if (sectionId === 'meta') {
+      var metaData = {
+        title: document.getElementById('meta-title-input').value.trim(),
+        sub: document.getElementById('meta-sub-input').value.trim(),
+        footnote: document.getElementById('meta-footnote-input').value.trim(),
+        devdate: document.getElementById('meta-devdate-input').value.trim() || '미정',
+        maxplayers: document.getElementById('meta-maxplayers-input').value.trim(),
+        platform: document.getElementById('meta-platform-input').value.trim(),
+        genre: document.getElementById('meta-genre-input').value.trim(),
+        linkurl: document.getElementById('meta-linkurl-input').value.trim(),
+        linktext: document.getElementById('meta-linktext-input').value.trim(),
+        sns: document.getElementById('meta-sns-input').value.trim() || '미정'
+      };
+
+      var metaRes = await sb.from('wiki_sections')
+        .update({ content: JSON.stringify(metaData), updated_by: currentUser.id, updated_at: new Date().toISOString() })
+        .eq('section_id', 'meta');
+
+      if (metaRes.error) {
+        showToast('저장에 실패했습니다: ' + metaRes.error.message);
+        return;
+      }
+
+      applyMetaData(metaData);
+      document.getElementById('doc-header-block').style.display = '';
+      document.getElementById('infobox-block').style.display = '';
+      document.getElementById('meta-edit').classList.remove('show');
+      showToast('기본 정보가 저장되었습니다.');
       return;
     }
 
@@ -1171,6 +1322,26 @@
     showToast(sectionLabels[sectionId] + ' 문단이 저장되었습니다.');
   }
 
+  /* 저장된(혹은 불러온) 메타 데이터를 실제 화면에 반영 */
+  function applyMetaData(data) {
+    if (!data) return;
+    if (data.title) document.getElementById('doc-title-text').textContent = data.title;
+    if (data.sub) document.getElementById('doc-sub-text').textContent = data.sub;
+    if (data.footnote) document.getElementById('footnote-text').textContent = data.footnote;
+    if (data.devdate) document.getElementById('info-devdate').textContent = data.devdate;
+    if (data.maxplayers) document.getElementById('info-maxplayers').textContent = data.maxplayers;
+    if (data.platform) document.getElementById('info-platform').textContent = data.platform;
+    if (data.genre) document.getElementById('info-genre').textContent = data.genre;
+    if (data.sns) document.getElementById('info-sns').textContent = data.sns;
+
+    var linkEl = document.getElementById('info-link');
+    if (data.linkurl) linkEl.setAttribute('href', data.linkurl);
+    if (data.linktext) linkEl.textContent = data.linktext;
+
+    // 브라우저 탭 제목/메타 설명도 함께 갱신
+    if (data.title) document.title = data.title;
+  }
+
   /* ===================================================================
      문단 내용 불러오기 (모두에게 공개, 로그인 불필요)
   ==================================================================== */
@@ -1181,6 +1352,16 @@
       return;
     }
     res.data.forEach(function(row) {
+      if (row.section_id === 'meta') {
+        if (row.content) {
+          try {
+            applyMetaData(JSON.parse(row.content));
+          } catch (e) {
+            console.error('메타 데이터 파싱 실패', e);
+          }
+        }
+        return;
+      }
       var view = document.getElementById(row.section_id + '-view');
       if (view && row.content) {
         view.innerHTML = row.content;
